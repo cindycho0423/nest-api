@@ -129,3 +129,34 @@ class UpdateUserDTO extends PartialType(CreateUserDTO) {
 하지만 이 방법은 좋은 방법이 아니다. NestJS는 Express와 Fastify 두 개의 프레임워크 위에서 돌아가기 때문에 req, res를 사용하지 않는 것이 좋다. NestJS 방법으로만 사용하면 Express에서 Fastify로 바로 전환할 수 있고, 작동하는게 멈추지도 않는다.
 
 - Fastify는 Express와 유사한 방식으로 설계 문제를 해결하기 때문에 Nest에 대한 좋은 대안 프레임워크를 제공합니다. fastify는 Express보다 훨씬 빠르며 거의 2배 더 나은 벤치마크 결과를 달성합니다.
+
+## Test-jest
+
+### it()
+
+테스트 클로저를 생성합니다.
+it()대신 test()도 사용 가능
+
+### expect()
+
+값을 테스트할 때마다 expect 함수가 사용됩니다. expect 하나만 콜하는 경우는 거의 없을 것입니다.
+
+### toBe()
+
+Object.is를 사용하여 정확한 동등성을 테스트합니다. 객체의 값을 확인하려면 대신 toEqual()을 사용하세요.
+
+### String
+
+toMatch를 사용하여 정규 표현식에 대해 문자열을 확인할 수 있습니다.
+ex) expect('Christoph').toMatch(/stop/);
+
+### Arrays and iterables
+
+toContain()을 사용하여 배열 또는 이터러블에 특정 항목이 포함되어 있는지 확인할 수 있습니다.
+ex) expect(shoppingList).toContain('milk');
+
+### Exceptions
+
+특정 함수가 호출될 때 오류가 발생하는지 테스트하려면 toThrow를 사용하십시오.
+예외를 발생시키는 함수는 래핑 함수 내에서 호출해야 합니다. 그렇지 않으면 toThrow 어설션이 실패합니다.
+ex) expect(() => compileAndroidCode()).toThrow('you are using the wrong JDK');
