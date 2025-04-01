@@ -18,7 +18,7 @@ jobs:
           script_stop: true # 아래 script 중 실패하는 명령이 하나라도 있으면 실패로 처리
           script: |
             cd /home/ubuntu/nest-api
-            git pull origin main
+            git pull origin master
             npm i
             npm run build
             pm2 kill
