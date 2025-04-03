@@ -67,7 +67,7 @@ jobs:
           script: |
             rm -rf /home/ubuntu/nest-api/current
             mkdir /home/ubuntu/nest-api/current
-            mv /home/ubuntu/nest-api/tobe/project.tar.gz /home/ubuntu/instagram-server/current/project.tar.gz
+            mv /home/ubuntu/nest-api/tobe/project.tar.gz /home/ubuntu/nest-api/current/project.tar.gz
             cd /home/ubuntu/nest-api/current
             tar -xvf project.tar.gz
             npm i
