@@ -46,30 +46,21 @@ jobs:
         run: npm run build
 
       - name: 압축하기
-        run: tar -czvf $GITHUB_SHA.tar.gz dist .env package.json package-lock.json
+        run: tar -czvf $GITHUB_SHA.tar.gz appspec.yml scripts dist .env package.json package-lock.json
 
-      - name: SCP로 EC2에 빌드된 파일 전송하기
-        uses: appleboy/scp-action@v0.1.7
+      - name: AWS Resource에 접근할 수 있게 AWS credentials 설정
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: project.tar.gz
-          target: /home/ubuntu/nest-api/tobe
+          aws-region: ap-northeast-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: SSH로 EC2에 접속하기
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script_stop: true
-          script: |
-            rm -rf /home/ubuntu/nest-api/current
-            mkdir /home/ubuntu/nest-api/current
-            mv /home/ubuntu/nest-api/tobe/project.tar.gz /home/ubuntu/nest-api/current/project.tar.gz
-            cd /home/ubuntu/nest-api/current
-            tar -xvf project.tar.gz
-            npm i
-            pm2 kill
-            pm2 start dist/main.js --name "nest-api"
+      - name: S3에 프로젝트 폴더 업로드하기
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.tar.gz s3://nest-api-server/$GITHUB_SHA.tar.gz
+
+      - name: Code Deploy를 활용해 EC2에 프로젝트 코드 배포
+        run: aws deploy create-deployment
+          --application-name nest-api
+          --deployment-config-name CodeDeployDefault.AllAtOnce
+          --deployment-group-name Production
+          --s3-location bucket=instagram-server,bundleType=tgz,key=$GITHUB_SHA.tar.gz
