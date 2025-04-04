@@ -63,4 +63,4 @@ jobs:
           --application-name nest-api
           --deployment-config-name CodeDeployDefault.AllAtOnce
           --deployment-group-name Production
-          --s3-location bucket=instagram-server,bundleType=tgz,key=$GITHUB_SHA.tar.gz
+          --s3-location bucket=nest-api-server,bundleType=tgz,key=$GITHUB_SHA.tar.gz
